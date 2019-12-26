@@ -4,7 +4,7 @@ Base class for rendering calendar from PHP scripts.
 ![](https://github.com/zdenekgebauer/monthcalendar/workflows/build/badge.svg)
 
 ## Installation 
-`composer require zdenekgebauer/monthcalendar`
+`composer require zdenekgebauer/month-calendar`
 
 ## Usage
 ```php
