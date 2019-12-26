@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="zdenekgebauer_monthcalendar" default="build">
+
+	<property name="dir.src" value="${project.basedir}/src"/>
+	<property name="dir.report" value="${project.basedir}/build/reports"/>
+	<property name="dir.report.codeception" value="${dir.src}/tests/_output"/>
+
+	<property name="exec.codecept" value="${project.basedir}/vendor/bin/codecept"/>
+	<property name="exec.composer" value="composer"/>
+	<property name="exec.php" value="php"/>
+	<property name="exec.phpcs" value="${project.basedir}/vendor/bin/phpcs"/>
+	<property name="phpcs.ignore" value="*/vendor/*,*/tests/*"/>
+	<property name="exec.phplint" value="${project.basedir}/vendor/bin/parallel-lint"/>
+	<property name="exec.phpmetrics" value="${project.basedir}/vendor/bin/phpmetrics"/>
+	<property name="exec.phpinsights" value="${project.basedir}/vendor/bin/phpinsights"/>
+	<property name="exec.phpstan" value="${project.basedir}/vendor/bin/phpstan"/>
+	<property name="exec.psalm" value="${project.basedir}/vendor/bin/psalm"/>
+
+	<property file="${project.basedir}/build/local.properties" override="true"/>
+
+	<target name="build" depends="analyse,test_unit,doc"/>
+	<target name="analyse" depends="phplint,phpcs,phpstan,phpinsights,psalm" description="phplint,phpcs,phpstan,phpinsights,psalm"/>
+	<target name="doc" depends="phpmetrics" description="phpmetrics"/>
+
+	<target name="test_unit" description="unit tests">
+		<exec command="${exec.codecept} run unit --html report-unit.html" dir="${project.basedir}" logoutput="true" checkreturn="true"/>
+	</target>
+	<target name="test_coverage" description="unit and integration tests with code coverage reports">
+		<exec command="${exec.codecept} run unit --html report-coverage.html --coverage-html" dir="${project.basedir}" logoutput="true" checkreturn="true"/>
+	</target>
+
+	<target name="phpcs" description="codesniffer - check coding standards">
+		<mkdir dir="${dir.report}" />
+		<exec executable="${exec.phpcs}" logoutput="true" escape="false">
+			<arg value="--standard=PSR12"/>
+			<arg value="--report-file=${dir.report}/checkstyle.txt"/>
+			<arg value="--ignore=${phpcs.ignore}"/>
+			<arg path="${dir.src}"/>
+		</exec>
+	</target>
+
+	<target name="phplint" description="phplint - check syntax">
+		<mkdir dir="${dir.report}" />
+		<exec executable="${exec.phplint}" logoutput="true" passthru="true" checkreturn="true" output="${dir.report}/phplint.txt">
+			<arg path="${dir.src}"/>
+		</exec>
+	</target>
+
+	<target name="phpmetrics" description="phpmetrics - create report about code metrics">
+		<exec executable="${exec.phpmetrics}" logoutput="true">
+			<arg value="--exclude=vendor,tests,examples"/>
+			<arg value="--report-html=${dir.report}/phpmetrics"/>
+			<arg value="${project.basedir}"/>
+		</exec>
+	</target>
+
+	<target name="phpstan" description="phpstan - static analyzer">
+		<exec command="${exec.phpstan} analyze -l 7 ${dir.src}"
+			  output="${dir.report}/phpstan.txt"
+			  dir="${project.basedir}" logoutput="true">
+		</exec>
+	</target>
+
+	<target name="psalm" description="psalm - static analyzer">
+		<exec command="${exec.psalm} -m -c=${project.basedir}/build/psalm.xml -r=${project.basedir}"
+			  output="${dir.report}/psalm.txt"
+			  dir="${project.basedir}"
+			  logoutput="true">
+		</exec>
+	</target>
+
+	<target name="phpinsights" description="phpinsights">
+		<exec command="${exec.phpinsights} analyse -n -v -c ${project.basedir}/build/phpinsights.php ${dir.src}"
+			  output="${dir.report}/phpinsights.txt"
+			  dir="${project.basedir}"
+			  logoutput="true">
+		</exec>
+	</target>
+
+</project>

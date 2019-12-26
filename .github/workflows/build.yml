@@ -1,0 +1,32 @@
+name: build
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate
+
+      - name: Install prestissimo composer plugin
+        run: composer global require hirak/prestissimo --prefer-dist --no-progress --no-suggest
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-suggest
+
+      - name: Check syntax of PHP files
+        run: vendor/bin/parallel-lint src
+
+      - name: Check coding standards
+        run: vendor/bin/phpcs --standard=PSR12 src
+
+      - name: Static analysis
+        run: vendor/bin/phpstan analyse -l 7 src
+
+      - name: Run test suite
+        run: vendor/bin/codecept run

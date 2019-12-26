@@ -1,0 +1,39 @@
+{
+  "name": "zdenekgebauer/month-calendar",
+  "license": "wtfpl",
+  "description": "Simple HTML monthly calendar generator",
+  "type": "library",
+  "authors": [
+    {
+      "name": "Zdenek Gebauer",
+      "email": "zdenek.gebauer@gmail.com"
+    }
+  ],
+  "minimum-stability": "stable",
+  "config": {
+    "platform": {
+      "php": "7.3"
+    },
+    "preferred-install": {
+      "*": "dist"
+    }
+  },
+  "require": {
+    "php": "7.3.*"
+  },
+  "autoload": {
+    "psr-4": {
+      "ZdenekGebauer\\MonthCalendar\\": "src/"
+    }
+  },
+  "require-dev": {
+    "codeception/codeception": "^4.0",
+    "jakub-onderka/php-parallel-lint": "^1.0",
+    "squizlabs/php_codesniffer": "^3.5",
+    "phpstan/phpstan": "^0.12",
+    "phpmetrics/phpmetrics": "^2.5",
+    "vimeo/psalm": "^3.7",
+    "nunomaduro/phpinsights": "^1.11",
+    "codeception/module-asserts": "^1.1"
+  }
+}
