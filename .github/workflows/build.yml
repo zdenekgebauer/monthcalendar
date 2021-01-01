@@ -13,9 +13,6 @@ jobs:
       - name: Validate composer.json and composer.lock
         run: composer validate
 
-      - name: Install prestissimo composer plugin
-        run: composer global require hirak/prestissimo --prefer-dist --no-progress
-
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress
 
