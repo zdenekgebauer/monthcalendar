@@ -16,9 +16,6 @@ jobs:
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress
 
-      - name: Check syntax of PHP files
-        run: vendor/bin/parallel-lint src
-
       - name: Check coding standards
         run: vendor/bin/phpcs --standard=PSR12 src
 
