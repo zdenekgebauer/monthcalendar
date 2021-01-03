@@ -8,21 +8,16 @@ use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
 use InvalidArgumentException;
+use JetBrains\PhpStorm\Pure;
 
 use function array_slice;
 
 class Calendar
 {
 
-    /**
-     * @var DateTimeInterface
-     */
-    protected $date;
+    protected DateTimeInterface $date;
 
-    /**
-     * @var int
-     */
-    protected $firstDayOfWeek = 0;
+    protected int $firstDayOfWeek = 0;
 
     public function __construct(DateTimeInterface $date)
     {
@@ -86,6 +81,7 @@ class Calendar
         return $blankDays < 0 ? $blankDays = 7 - abs($blankDays) : $blankDays;
     }
 
+    #[Pure]
     protected function renderWeekDays(): string
     {
         $columns = $this->columnNames();
@@ -111,6 +107,7 @@ class Calendar
     /**
      * @return array<string>
      */
+    #[Pure]
     protected function columnNames(): array
     {
         $columns = array_slice($this->weekdays(), $this->firstDayOfWeek);

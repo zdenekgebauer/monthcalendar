@@ -12,14 +12,14 @@
   "minimum-stability": "stable",
   "config": {
     "platform": {
-      "php": "7.3"
+      "php": "8.0"
     },
     "preferred-install": {
       "*": "dist"
     }
   },
   "require": {
-    "php": ">=7.3"
+    "php": ">=8.0"
   },
   "autoload": {
     "psr-4": {
