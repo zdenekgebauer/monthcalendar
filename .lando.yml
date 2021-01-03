@@ -1,4 +1,4 @@
-name: monthcalendar
+name: monthcalendar_php73
 services:
   appserver:
     type: php:7.3
