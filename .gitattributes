@@ -3,7 +3,11 @@ build export-ignore
 tests export-ignore
 .gitattributes export-ignore
 .gitignore export-ignore
+.lando.yml
 build.xml export-ignore
 codeception*.yml export-ignore
 
 *.php text eol=lf
+
+*.php diff=php
+*.phar -diff

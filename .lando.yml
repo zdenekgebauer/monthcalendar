@@ -1,0 +1,33 @@
+name: monthcalendar
+services:
+  appserver:
+    type: php:7.3
+    via: cli
+    xdebug: coverage
+    composer_version: 2-latest
+    build_as_root:
+      - docker-php-ext-install sockets
+tooling:
+  php:
+    service: appserver
+  composer:
+    service: appserver
+  phpcs:
+    service: appserver
+    description: check cocing standards (PHP CodeSniffer)
+    cmd: php build/phpcs.phar --standard=PSR12 --report-file=build/reports/checkstyle.txt src
+  phpstan:
+    service: appserver
+    description: static analysis (PHPStan)
+    cmd: php build/phpstan.phar analyze -c build/phpstan.neon > build/reports/phpstan.txt
+  tests:
+    service: appserver
+    description: unit tests (Codeception)
+    cmd: php build/codecept.phar run unit --html report-unit.html
+  coverage:
+    service: appserver
+    description: code coverage (Codeception)
+    cmd: php build/codecept.phar run unit --html report-coverage.html --coverage-html
+events:
+  pre-start:
+    - appserver: composer install
