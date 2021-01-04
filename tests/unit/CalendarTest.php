@@ -55,4 +55,13 @@ class CalendarTest extends \Codeception\Test\Unit
         });
     }
 
+    public function testOtherMonths(): void
+    {
+        $obj = new Calendar(new \DateTimeImmutable('2020-12-10'));
+        $obj->showOtherMonths = true;
+        $output = $obj->render();
+
+        $this->tester->assertStringContainsString('<tbody><tr><td data-date="2020-11-29" data-other-month>29</td><td data-date="2020-11-30" data-other-month>30</td><td data-date="2020-12-01">1</td><td data-date="2020-12-02">2</td><td data-date="2020-12-03">3</td><td data-date="2020-12-04">4</td><td data-date="2020-12-05">5</td></tr>', $output);
+        $this->tester->assertStringContainsString('<tr><td data-date="2020-12-27">27</td><td data-date="2020-12-28">28</td><td data-date="2020-12-29">29</td><td data-date="2020-12-30">30</td><td data-date="2020-12-31">31</td><td data-date="2021-01-01" data-other-month>1</td><td data-date="2021-01-02" data-other-month>2</td></tr></tbody>', $output);
+    }
 }

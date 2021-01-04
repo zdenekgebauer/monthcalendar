@@ -11,6 +11,7 @@ Base class for rendering calendar from PHP scripts.
 $date = new DateTime();
 $calendar = new Calendar($date);
 $calendar->firstDayOfWeek(0); // 0-6, 0=Sunday
+$calendar->showOtherMonths = true; // show days from previous and next month 
 echo $calendar->render(); 
 ```
 
@@ -33,7 +34,7 @@ class CustomCalendar extends ZdenekGebauer\MonthCalendar\Calendar
         return '<caption>' . $this->date->format('m/Y') . '</caption>';
     }
 
-    protected function renderDay(DateTimeInterface $currentDate): string
+    protected function renderDay(DateTimeInterface $currentDate, bool $isOtherMonth = false): string
     {
         // own content of day, ie. info "occupied"  
         $day = (int)$currentDate->format('j');        
@@ -42,9 +43,12 @@ class CustomCalendar extends ZdenekGebauer\MonthCalendar\Calendar
         if ($day === 10 || $day === 15) {
             $cssClass = 'occupied';
             $content =  'occupied';                   
+        }
+        if ($isOtherMonth) {
+            $cssClass .= ' other-month';
         }       
         
-        return '<td data-date="' . $currentDate->format('Y-m-d') . '"' . $cssClass . '>'
+        return '<td data-date="' . $currentDate->format('Y-m-d') . '" class=' . $cssClass . '">'
             . $currentDate->format('j')
             . '<hr>' . ($content)
             . '</td>';

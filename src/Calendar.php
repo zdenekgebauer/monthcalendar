@@ -19,6 +19,11 @@ class Calendar
 
     protected int $firstDayOfWeek = 0;
 
+    /**
+     * show days from previous and next month
+     */
+    public bool $showOtherMonths = false;
+
     public function __construct(DateTimeInterface $date)
     {
         $this->date = $date;
@@ -45,8 +50,24 @@ class Calendar
         $month = (int)$this->date->format('n');
         $currentDate->setDate($year, $month, 1);
 
+        $html = '<tbody><tr>';
+
         $blankDays = $this->calculateBlankDays($currentDate);
-        $html = '<tbody><tr>' .  str_repeat('<td></td>', $blankDays);
+        if ($blankDays > 0) {
+            if ($this->showOtherMonths) {
+                $prevMonth = new DateTime();
+                $prevMonth->setDate($year, $month - 1, 1);
+                $daysInPrevMonth = (int)$prevMonth->format('t');
+                //$start = (int)$prevMonth->format('t') - - $blankDays + 1;
+                //$daysInPrevMonth = $prevMonth->format('t');
+                for ($day = $daysInPrevMonth - $blankDays + 1; $day <= $daysInPrevMonth; $day++) {
+                    $currentDate->setDate((int)$prevMonth->format('Y'), (int)$prevMonth->format('n'), $day);
+                    $html .= $this->renderDay($currentDate, true);
+                }
+            } else {
+                $html .= str_repeat('<td></td>', $blankDays);
+            }
+        }
 
         $daysCounter = $blankDays;
         /** @var DateTimeInterface $currentDate */
@@ -62,7 +83,18 @@ class Calendar
         }
 
         $blankDays = $daysCounter < 7 && $daysCounter > 0 ? 7 - $daysCounter : 0;
-        $html .= str_repeat('<td></td>', $blankDays);
+        if ($blankDays > 0) {
+            if ($this->showOtherMonths) {
+                $nextMonth = new DateTime();
+                $nextMonth->setDate($year, $month + 1, 1);
+                for ($day = 1; $day <= $blankDays; $day++) {
+                    $currentDate->setDate((int)$nextMonth->format('Y'), (int)$nextMonth->format('n'), $day);
+                    $html .= $this->renderDay($currentDate, true);
+                }
+            } else {
+                $html .= str_repeat('<td></td>', $blankDays);
+            }
+        }
         return $html . '</tr></tbody>';
     }
 
@@ -88,10 +120,10 @@ class Calendar
         return '<thead><tr><th>' . implode('</th><th>', $columns) . '</th></tr></thead>';
     }
 
-    protected function renderDay(DateTimeInterface $currentDate): string
+    protected function renderDay(DateTimeInterface $currentDate, bool $isOtherMonth = false): string
     {
-        return '<td data-date="' . $currentDate->format('Y-m-d') . '">'
-            . $currentDate->format('j') . '</td>';
+        return '<td data-date="' . $currentDate->format('Y-m-d') . '"'
+            . ($isOtherMonth ? ' data-other-month' : '') . '>' . $currentDate->format('j') . '</td>';
     }
 
     /**
